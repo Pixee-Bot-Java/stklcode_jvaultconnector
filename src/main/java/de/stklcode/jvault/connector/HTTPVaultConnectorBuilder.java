@@ -19,6 +19,8 @@ package de.stklcode.jvault.connector;
 import de.stklcode.jvault.connector.exception.ConnectionException;
 import de.stklcode.jvault.connector.exception.TlsException;
 import de.stklcode.jvault.connector.exception.VaultConnectorException;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -303,7 +305,7 @@ public final class HTTPVaultConnectorBuilder {
         /* Parse URL from environment variable */
         if (System.getenv(ENV_VAULT_ADDR) != null && !System.getenv(ENV_VAULT_ADDR).trim().isEmpty()) {
             try {
-                var url = new URL(System.getenv(ENV_VAULT_ADDR));
+                var url = Urls.create(System.getenv(ENV_VAULT_ADDR), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                 this.host = url.getHost();
                 this.port = url.getPort();
                 this.tls = url.getProtocol().equals("https");
